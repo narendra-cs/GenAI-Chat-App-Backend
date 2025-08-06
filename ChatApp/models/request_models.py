@@ -26,7 +26,7 @@ class Role(str, Enum):
 
 
 class Message(BaseModel):
-    role: Role = Field(default=Role.USER)
+    role: Role = Field(min_length=3)
     content: str = Field(min_length=3)
 
     model_config = {

@@ -15,6 +15,12 @@ session_store = SessionStore()
 global chat_store
 chat_store = {}
 
+
+@app.get("/healthy", status_code=status.HTTP_200_OK)
+def healthy():
+    return {"status": "healthy"}
+
+
 # API endpoints for session handle
 
 
@@ -31,7 +37,7 @@ def get_session(session_id: int = Path(ge=1000, title="Session ID")):
 
 @app.post("/sessions", status_code=status.HTTP_201_CREATED)
 def create_session(session: Session):
-    session.session_id = len(session_store.session_store) + 1
+    session.session_id = session_store.get_session_count() + 1
     session.session_user = session.session_user.strip().lower()
     session_store.add_session(session)
     chat_store[session.session_id] = []
@@ -76,4 +82,6 @@ def add_message(message: Message, session_id: int = Path(ge=1000, title="Session
 
     if session_id not in chat_store:
         chat_store[session_id] = []
+
+    message.content = message.content.strip()
     chat_store[session_id].append(message)
