@@ -8,7 +8,7 @@ from .stores.session_store import SessionStore
 app = FastAPI()
 
 # Global session store
-global session_store 
+global session_store
 session_store = SessionStore()
 
 # Chat history store (session_id -> list of messages)
@@ -16,6 +16,7 @@ global chat_store
 chat_store = {}
 
 # API endpoints for session handle
+
 
 @app.get("/sessions/{session_id}", status_code=status.HTTP_200_OK)
 def get_session(session_id: int = Path(ge=1000, title="Session ID")):
@@ -62,9 +63,7 @@ def get_chat(
 
 
 @app.post("/sessions/{session_id}/messages", status_code=status.HTTP_201_CREATED)
-def add_message(
-    message: Message, session_id: int = Path(ge=1000, title="Session ID")
-):
+def add_message(message: Message, session_id: int = Path(ge=1000, title="Session ID")):
     if not session_store.is_session_valid(session_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Session not found"
